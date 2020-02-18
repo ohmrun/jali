@@ -1,0 +1,16 @@
+-main Main
+--interp
+
+-lib Parsex
+-lib stx
+-lib stx_parse
+-lib hscript 
+
+
+-cp src/main/haxe
+
+-D stx_test_focus
+
+-resource asset/texpr.et@texpr
+-resource asset/texpr2.et@texpr2
+-resource asset/simple_lang.et@simple_lang
