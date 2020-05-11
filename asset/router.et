@@ -1,13 +1,3 @@
-[
-  parser [
-    import 
-  ]
-]
-
-import[
-  my_api.Business Business
-]
-
 stx.Server.route[ business Business ][
   [GET  "/"                     [home.index                                           _]]
   [GET  ~/$user/friend/         [user.get[name == user].friend.index                  user.friend.index]]

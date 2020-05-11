@@ -1,15 +1,12 @@
 -main Main
-
+--interp
 
 --macro Main.boot()
 
--lib hxjsonast
--lib stx_pico
--lib stx_nano
--lib stx_assert
--lib stx_log
+-lib Parsex
 -lib stx_std
 -lib stx_parse
+-lib stx_makro
 -lib hscript 
 
 
@@ -22,8 +19,3 @@
 -resource asset/texpr_fails.te@texpr_fails
 -resource asset/simple_lang.et@simple_lang
 -resource asset/transformed.et@transformed
-
-
-#--interp
--dce no
--js test.js

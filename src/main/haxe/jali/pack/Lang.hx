@@ -1,10 +1,32 @@
 package jali.pack;
 
-import jali.head.data.Lang in LangT;
+enum LangSum<T>{
+  
+  App(name:String,?args:Term<T>);
+  Tag(name:String,val:Lang<T>);
+  
+  One;//what comes in goes out
+  Lit(e:Term<T>);//replace input with this
 
-abstract Lang<T>(LangT<T>) from LangT<T> to LangT<T>{
+  Seq(l:Lang<T>,r:Lang<T>);
+  Alt(l:Lang<T>,r:Lang<T>);
+
+  Rep(e:Lang<T>);//+
+  Opt(e:Lang<T>);//?
+  //* == Opt(Rep(_))
+
+  Mem(e:Lang<T>);//recursive rule
+
+  //Not?
+  //Has(e:Term<T>,o);//?if else?
+
+  //Put(name:String,val:Lang<T>);?//put in the symbol table
+  //Get(name:String);?//restore from symbol table
+}
+
+abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
   public function new(self) this = self;
-  static public function lift<T>(self:LangT<T>):Lang<T> return new Lang(self);
+  static public function lift<T>(self:LangSum<T>):Lang<T> return new Lang(self);
   //TODO hmm?
   public function snoc(that:Lang<T>):Lang<T>{
     return switch([this,that]){
@@ -14,13 +36,13 @@ abstract Lang<T>(LangT<T>) from LangT<T> to LangT<T>{
   }
   static public function then<T>(thiz:Lang<T>,that:Lang<T>):Lang<T> return thiz.snoc(that);
 
-  public function prj():LangT<T> return this;
+  public function prj():LangSum<T> return this;
   private var self(get,never):Lang<T>;
   private function get_self():Lang<T> return lift(this);
 
-  public function alt(arr:Array<Lang<T>>):Lang<T>       return jali.Lift.alts([self].ds().concat(arr));
+  public function alt(arr:Array<Lang<T>>):Lang<T>       return LiftJali.alts([self].concat(arr));
   public function or(e1:Lang<T>):Lang<T>                return alt([e1]);
-  public function seq(arr:Array<Lang<T>>):Lang<T>       return jali.Lift.seqs([self].ds().concat(arr));
+  public function seq(arr:Array<Lang<T>>):Lang<T>       return LiftJali.seqs([self].concat(arr));
   public function and(expr:Lang<T>):Lang<T>             return seq([expr]);
   public function rep():Lang<T>                         return Rep(this);
   public function rep1():Lang<T>                        return Seq(this,Rep(this));
@@ -31,7 +53,7 @@ abstract Lang<T>(LangT<T>) from LangT<T> to LangT<T>{
   public function toParser(grammar:Grammar<T>):Parser<T,Lang<T>>{
     return new LAnon(grammar.apply.bind(this)).asParser();
   }
-  static public function mod<T>(fn:Lang<T> -> Lang<T>,self:LangT<T>):Lang<T>{
+  static public function mod<T>(fn:Lang<T> -> Lang<T>,self:LangSum<T>):Lang<T>{
     var f = mod.bind(fn);
     return fn(switch self {
       case One              : One;
@@ -57,7 +79,7 @@ abstract Lang<T>(LangT<T>) from LangT<T> to LangT<T>{
     mem:Z->Z,
 
     term: Term<T> -> Z,
-    v:LangT<T>
+    v:LangSum<T>
   ){
     var sub = fold.bind(one,app,tag,lit,seq,rep,alt,opt,mem,term);
     return switch v {

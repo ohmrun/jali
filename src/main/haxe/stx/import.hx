@@ -1,19 +1,10 @@
 package stx;
 
-import stx.core.head.Data;
-import jali.head.Data;
+using   stx.Pico;
+using   stx.Nano;
+using   stx.Fn;
+using   stx.parse.Pack;
 
-import com.mindrocks.text.*;
-import stx.prs.pack.Base;
-import stx.core.Package;
-import stx.ds.Package;
+using jali.Pack;
 
-import stx.prs.head.parse.term.Literal;
 
-import jali.Package; 
-
-using stx.core.Lift;
-using com.mindrocks.text.Lift;
-using stx.prs.Lift;
-using jali.Lift;
-using stx.fn.Lift;

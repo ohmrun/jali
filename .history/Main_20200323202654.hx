@@ -1,5 +1,4 @@
-using stx.Pico;
-using stx.Nano;
+using stx.Core;
 
 import jali.test.*;
 

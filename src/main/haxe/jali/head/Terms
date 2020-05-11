@@ -1,0 +1,60 @@
+package jali.head;
+
+class Terms{
+  static public var _ = new jali.body.Terms();
+
+  static public function parse(string:String) return new stx.parse.jali.term.Term().parse(string.reader());
+
+  @:from static public function fromTArray<T>(arr:Array<T>):Term<T>{
+    return TOf(Data(arr),[]);
+  }
+  @:from static public function fromTermArray<T>(arr:Array<Term<T>>):Term<T>{
+    return TOf(Rest,arr);
+  }
+  static public function fromArray(arr:Array<Dynamic>):Term<Dynamic>{
+    return switch (arr.length){
+      case 0  : TOf(Rest,[]);
+      case 1  : 
+        var sub : Array<Dynamic> = arr[0];
+        if(sub.length == 0) { 
+          TOf(Data([]),[]);
+        } else {
+          fromArray(sub);
+        }
+      default : 
+        var sub : Array<Dynamic> = arr.prj().pop();
+        if(sub.length == 0) { 
+          TOf(Data(arr),[]);
+        }else{
+          TOf(Data(arr),[fromArray(sub)]);
+        }
+    }
+  }
+  static public function fromJsValue(val:JsValue<String>):Term<String>{
+    return switch (val){
+      case JsObject(record) :
+          TOf.make().rest(
+            record.map(
+              (tp) -> switch(tp){
+                case tuple2(l,r) : TOf(Code(l),[fromJsValue(r)]);
+              }
+            )
+          );
+      case JsArray(array) :
+          TOf.make().rest(
+            array.map(_ -> fromJsValue(_))
+          );
+      case JsData(x) : TOf.make().datum(x,__);
+    }
+  }
+  
+  static public function fromMap<V>(map:StdMap<String,V>):Term<V>{
+    var parts : Array<Term<V>> = [];
+    for( key => val in map ){
+      parts.prj().push(
+        TOf.make().call_data(key,[val])
+      );
+    }
+    return TOf(Rest,parts);
+  }
+}

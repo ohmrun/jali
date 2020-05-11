@@ -5,7 +5,7 @@ import haxe.Unserializer;
 
 
 @:access(stx)class TermTest extends haxe.unit.TestCase{
-  public function Xtest_declare(){
+  public function test_declare(){
     // likes (john , mary)
     trace("\n");
     var term0 = TOf(Code("likes"),[TOf(Data(["john","mary"]),[])]);
@@ -23,7 +23,8 @@ import haxe.Unserializer;
     //var t0000 = TExpr.fromArray(t000);
     //trace(t0000);
 
-    var term2 = TOf(Code("and"),[term0,term1]);
+    var term2 : Term<String>= TOf(Code("and"),[term0,term1]);
+    trace(__.show(term2.prj()));
     trace(term2);
     /*
 
@@ -38,7 +39,7 @@ import haxe.Unserializer;
     var term4 = __.t().code("tom").likes(__.t().code("mary"));
     trace(term4);
   }
-  public function XtestParser(){
+  public function testParser(){
     var string  = __.resource("texpr").string();
     var output  = Term.parse(string);
     switch(output){
@@ -48,14 +49,14 @@ import haxe.Unserializer;
         trace(output);
     }
   }
-  public function testMod(){
+  public function XtestMod(){
     var string  = __.resource("texpr2").string();
     var output  = Term.parse(string);
     switch(output){
       case Success(x,xs) : 
-        x = Term.codeify(Term.optimise(x));
-        trace(x);
-        Term.mod(
+        //x = Term.codeify(Term.optimise(x));
+        trace(__.show(x.prj()));
+        Terms._.mod(
           (t) -> {
             return t;
           },
@@ -64,5 +65,10 @@ import haxe.Unserializer;
       default :
         trace(output);
     }
+  }
+  public function XtestFails(){
+    var string = __.resource("texpr_fails").string();
+    var output = Term.parse(string);
+    trace (output);
   }
 }

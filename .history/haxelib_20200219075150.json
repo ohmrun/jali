@@ -14,10 +14,9 @@
     "url": "https://github.com/0b1kn00b/stx_pointwise",
     "dependencies": {
         "tink_core": "",
-        "stx_pico": "",
-        "stx_nano": "",
+        "stx": "",
         "hscript": "",
-        "hxjsonast": "",
+        "Parsex" : "",
         "stx_parse" : ""
     },
     "classPath": "src/main/haxe"

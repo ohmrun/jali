@@ -2,7 +2,7 @@ package stx.parse.jali.term;
 
 import jali.pack.Lang in LangA;
 
-class Lang<T> extends com.mindrocks.text.parsers.Base<T,LangA<T>,Parser<T,LangA<T>>>{
+class Lang<T> extends stx.parse.pack.parser.term.Base<T,LangA<T>,Parser<T,LangA<T>>>{
   var grammar : Grammar<T>;
   public function new(grammar,?id){
     super(id);

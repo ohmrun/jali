@@ -46,12 +46,12 @@ class Generator{
           case 1 :
             var arg = rest[0];
             switch(arg){
-              case _.term() => Some(_)                  : App(code,arg);
-              case _.data() => Some(tuple2(data,rest))  :
+              case _.head_only()  => Some(_)                  : App(code,arg);
+              case _.data()       => Some(tuple2(data,rest))  :
                 trace('hmm');
                 throw "FUTTOCKS";
                 null;
-              case _.rest_body().fmap(_->_.just_data()) => Some(_data) :
+              case _.rest_body().fmap(_->_.data_only()) => Some(_data) :
                 _data.map(App.bind(_,null)).lfold1(Seq).force();
               default : 
                 trace(arg.prj());
@@ -65,7 +65,7 @@ class Generator{
             throw "PANT-SCAPE";
             null;
         }
-      case _.just_data()    => Some(data) : data.map(App.bind(_,null)).lfold1(Seq).force();
+      case _.data_only()    => Some(data) : data.map(App.bind(_,null)).lfold1(Seq).force();
       case _.rest_body()    => Some(body) : rule_body_rec(body);
       default : 
         trace(v);

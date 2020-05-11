@@ -1,5 +1,5 @@
 package stx.parse.jali.term;
-class Memo<T> extends com.mindrocks.text.parsers.Delegate<T,Lang<T>>{
+class Memo<T> extends stx.parse.pack.parser.term.Delegate<T,Lang<T>>{
   override public function new(delegation:Parser<T,Lang<T>>,?id){
     super(delegation.memo(),id);
   } 

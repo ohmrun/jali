@@ -1,4 +1,4 @@
-package jali.type;
+package jali.pack;
 
 class Rule<T> extends haxe.ds.StringMap<Lang<T>>{
   public var name : String;
@@ -6,18 +6,18 @@ class Rule<T> extends haxe.ds.StringMap<Lang<T>>{
     super();
     this.name = name;
   }
-  public function toArray():Array<Tuple2<String,Lang<T>>>{
+  public function toArray():Array<Couple<String,Lang<T>>>{
     var out = [];
     for (key => val in this){
-      out.push(tuple2(key,val));
+      out.push(__.couple(key,val));
     }
     return out;
   }
-  override public function toString(){
+  public function show(){
     return "\n" + toArray().map(
-      __.into2(
+      __.decouple(
         (l:String,r:Lang<T>) -> '$l :=    ${r.toString()}'
-      )
+    )
     ).join("\n");
   }
 }

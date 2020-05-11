@@ -5,7 +5,7 @@ import jali.pack.Term in TermA;
 
 enum Lang<T>{
   One;
-  App(name:String,?args:TermA<T>);
+  App(name:String,?args:Term<T>);
   Tag(name:String,val:LangA<T>);
   
   Lit(e:TermA<T>);//?EQ?

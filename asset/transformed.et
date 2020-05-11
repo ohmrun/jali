@@ -1,0 +1,6 @@
+class TestClass[
+  [meta 
+    [extends jali.test.TransformerTest.BaseClass]
+  ]
+  [method [arg arg1 arg2] [parse[haxe "return 'hello world'"]]]
+]

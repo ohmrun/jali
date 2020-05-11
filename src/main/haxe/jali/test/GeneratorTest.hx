@@ -46,7 +46,7 @@ class GeneratorTest extends haxe.unit.TestCase{
         (e)         -> ecall(eident('opt'),[e]),
         (e)         -> ecall(eident('mem'),[e]),
 
-        (term)      -> Term.reduce(
+        (term)      -> Term._.reduce(
           (l,r)   -> {
             //trace('$l $r');
             return switch([l,r]){
@@ -75,10 +75,7 @@ class GeneratorTest extends haxe.unit.TestCase{
     var clazz   = ModuleTypeA.make(rule.name).declare_class(
       fields,
       CTypeA.path('stx.prs.pack.Parse'.split("."))
-    );
-    var checker = new Checker();
-        checker.check(clazz);
-    
+    );    
   }
   static public function prim_from_string(str:String){
     return switch(str){
@@ -200,13 +197,13 @@ class ExprAs{
   static public function etry(e:Expr,v,t,ecatch):ExprA{
     return ETry(e,v,t,ecatch);
   }
-  static public function eobject(fl:Array<Tuple2<String,Expr>>):ExprA{
+  static public function eobject(fl:Array<Couple<String,Expr>>):ExprA{
     return EObject(fl.map(tp -> {name : tp.fst(), e : tp.snd() }).prj());
   }
   static public function eternary(cond,e1,e2):ExprA{
     return ETernary( cond, e1, e2);
   }
-  static public function eswitch(e,cases:Array<Tuple2<Array<Expr>,Expr>>,?defaultExpr):ExprA{
+  static public function eswitch(e,cases:Array<Couple<Array<Expr>,Expr>>,?defaultExpr):ExprA{
     return ESwitch(e,cases.map(tp -> { values : tp.fst().prj(), expr : tp.snd() } ).prj(),defaultExpr);
   }
   static public function edo_while(cond:Expr,e:Expr):ExprA{

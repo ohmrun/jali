@@ -1,6 +1,6 @@
 Parser.Shenanigans [
   [whitespace Base.whitespace]
-  [spaced [x] and ` many [whitespace] x]
-  [l_brckt ` spaced ` "["]
-  [r_brckt ` spaced ` "]"]
+  [and [ [spaced [x]] [many [whitespace x]] ] ]
+  [l_brckt [ spaced [ "[" ] ]]
+  [r_brckt [ spaced [ "]" ] ]]
 ]

@@ -4,8 +4,6 @@ import stx.parse.jali.term.Stash;
 import stx.parse.jali.term.Memo;
 import stx.parse.jali.term.Tag;
 
-import com.mindrocks.text.parsers.Delegate;
-import com.mindrocks.text.parsers.Regex;
 
 class Grammar<T> extends haxe.ds.StringMap<Parser<T,Lang<T>>>{
   public var name(default,null):String;

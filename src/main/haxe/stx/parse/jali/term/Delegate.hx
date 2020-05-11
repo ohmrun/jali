@@ -1,6 +1,6 @@
 package stx.parse.jali.term;
 
-class Delegate<T,U> extends com.mindrocks.text.parsers.Base<T,Lang<U>,Parser<T,U>>{
+class Delegate<T,U> extends stx.parse.pack.parser.term.Base<T,Lang<U>,Parser<T,U>>{
   public function new(delegate,?id){
     super(delegate,id);
   }

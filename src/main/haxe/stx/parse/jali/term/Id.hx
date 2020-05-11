@@ -1,16 +1,18 @@
 package stx.parse.jali.term;
 
-class Id extends com.mindrocks.text.parsers.Base<String,Lang<String>,Parser<String,Lang<String>>>{
+import stx.parse.pack.parser.term.Identifier;
+
+class Id extends stx.parse.pack.parser.term.Base<String,Lang<String>,Parser<String,Lang<String>>>{
 
   override function do_parse(ipt:Input<String>):ParseResult<String,Lang<String>>{
     var args = ipt.memo.symbols.get(this);
     return switch(args){
       case TOf(Code(code),_) : 
-        new com.mindrocks.text.parsers.Identifier(code).asParser().then(
-          TOf.make().code.fn().then(Lit)
+        new Identifier(code).asParser().then(
+          TOf.make().code_only.fn().then(Lit)
         ).parse(ipt);
       default : 
-        'malformed input $args'.no(ipt);
+        ipt.fail('malformed input $args');
     }
   }
 }
