@@ -1,9 +1,0 @@
-Grammar SimpleParser [
-  ["p_star_id"  [ id ["x"] ]]
-  ["p_plus_id"  [ id ["+"] ]]
-  ["p_int"      [ Tag["Num" regex ["[0-9]+"]] ]]
-  ["p_expr"     [ Mem[[p_mult p_plus p_int]] ]]
-  ["p_mult"     [ Tag["Mult" [p_expr p_star_id p_expr]] ]]
-  ["p_plus"     [ Tag["Plus" [p_expr p_star_id p_expr]] ]]
-  ["main"       [ p_expr ]]
-]

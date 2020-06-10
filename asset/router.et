@@ -1,7 +1,0 @@
-stx.Server.route[ business Business ][
-  [GET  "/"                     [home.index                                           _]]
-  [GET  ~/$user/friend/         [user.get[name == user].friend.index                  user.friend.index]]
-  [POST ~/$user/friend/         [user.get[name == user].friend.create[req.body]       user.friend.create]]
-  [GET  ~/$user/business/$rest  [business[user, rest]                                 business_api]]
-]
-
