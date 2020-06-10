@@ -26,13 +26,13 @@ class GrammarApi<T> extends haxe.ds.StringMap<Parser<T,Lang<T>>>{
       case Tag(name,e)      : new Tag(name,apply(e)).asParser();
       case Seq(l, r)        : lazy(l).and(lazy(r)).then(__.decouple(Seq));// until Lit? or fail if lit not first?
       case Alt(l, r)        : lazy(l).or(lazy(r));
-      case Rep(e)           : lazy(e).many().then(arr -> arr.lfold(Lang.then,Lit(TOf(Rest,[]))));
+      case Rep(e)           : lazy(e).many().then(arr -> arr.lfold(Lang.then,Lit(Empty)));
       case Opt(e)           : lazy(e).option().then(opt -> opt.defv(seed));
     };
   }
-  function seq(l:Lang<T>,r:Lang<T>):Lang<T>{
+function seq(l:Lang<T>,r:Lang<T>):Lang<T>{
     return switch([l,r]){
-      case [Lit(l),Lit(r)]  : Lit(l.snoc(r));
+      case [Lit(l),Lit(r)]  : Lit(Group(Cons(l,Cons(r,Nil))));
       default               : Seq(l,r);
     }
   }

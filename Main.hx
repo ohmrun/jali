@@ -27,19 +27,11 @@ class Main {
 }
 class BareNakedTest extends haxe.unit.TestCase{
   public function test_1(){
-    var string = __.resource("bare_naked").string();
-    var result = new stx.parse.Jali().parse(string.reader());
-    trace(result);
- 
-    var err = result.error().fudge().with;
-    for (e in err){
-      trace(e);
-    }
+    
   }
 }
 class OtherTest extends haxe.unit.TestCase{
   public function testEmptyParse(){
-    var string = "";
-    var result = Term.parse(string);
+    
   }
 }

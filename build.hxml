@@ -11,8 +11,10 @@
 -lib stx_std
 -lib stx_parse
 -lib stx_asys
--lib hscript 
 
+
+-lib hscript 
+-lib pml
 
 -cp src/main/haxe
 

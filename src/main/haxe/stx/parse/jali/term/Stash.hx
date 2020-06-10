@@ -1,7 +1,7 @@
 package stx.parse.jali.term;
 
 class Stash<T> extends stx.parse.pack.parser.term.Delegate<T,Lang<T>>{
-  var value : Term<T>;
+  var value : Expr<T>;
   public function new(delegation,value,?pos){
     super(delegation,pos);
     this.value = value;

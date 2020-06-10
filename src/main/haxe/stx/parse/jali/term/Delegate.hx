@@ -6,7 +6,7 @@ class Delegate<T,U> extends stx.parse.pack.parser.term.Base<T,Lang<U>,Parser<T,U
   }
   override function do_parse(ipt:Input<T>){
     return this.delegation.then(
-      (x) -> Lit(TOf.make().datum(x,__))
+      (x) -> Lit(Value(x))
     ).parse(ipt);
   }
 }

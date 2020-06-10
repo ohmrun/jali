@@ -22,5 +22,3 @@ import stx.parse.pack.parser.term.Failed;
 import stx.parse.jali.Term;
 
 using jali.Pack;
-
-using stx.Show;

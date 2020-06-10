@@ -1,9 +1,0 @@
-package jali.head.data;
-
-import jali.pack.Term in TermA;
-
-enum HeadSum<T>{
-  Rest;
-  Data(data:Array<T>);
-  Code(code:String);
-}

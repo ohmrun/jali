@@ -2,11 +2,11 @@ package jali.pack;
 
 enum LangSum<T>{
   
-  App(name:String,?args:Term<T>);
+  App(name:String,?args:Expr<T>);
   Tag(name:String,val:Lang<T>);
   
   One;//what comes in goes out
-  Lit(e:Term<T>);//replace input with this
+  Lit(e:Expr<T>);//replace input with this
 
   Seq(l:Lang<T>,r:Lang<T>);
   Alt(l:Lang<T>,r:Lang<T>);
@@ -27,10 +27,10 @@ enum LangSum<T>{
 abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
   public function new(self) this = self;
   static public function lift<T>(self:LangSum<T>):Lang<T> return new Lang(self);
-  //TODO hmm?
+  
   public function snoc(that:Lang<T>):Lang<T>{
     return switch([this,that]){
-      case [Lit(e0),Lit(e1)] : Lit(e0.both(e1));
+      case [Lit(e0),Lit(e1)] : Lit(Group(Cons(e0,Cons(e1,Nil))));
       default                : Seq(this,that);
     }
   }
@@ -78,7 +78,7 @@ abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
     opt:Z->Z,
     mem:Z->Z,
 
-    term: Term<T> -> Z,
+    term: Expr<T> -> Z,
     v:LangSum<T>
   ){
     var sub = fold.bind(one,app,tag,lit,seq,rep,alt,opt,mem,term);
@@ -100,7 +100,7 @@ abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
       case App(name, args)  : 
         var arg = 
           __.option(args)
-            .map(_ -> _.toStringCompact())
+            .map(_ -> _.toString())
             .map(_ -> ' ($_)')
             .defv('');
       '$name$arg';
