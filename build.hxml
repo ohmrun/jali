@@ -1,7 +1,7 @@
 -main Main
 
 
---macro Main.boot()
+#--macro Main.boot()
 
 -lib hxjsonast
 -lib stx_pico
@@ -10,6 +10,7 @@
 -lib stx_log
 -lib stx_std
 -lib stx_parse
+-lib stx_asys
 -lib hscript 
 
 
@@ -22,8 +23,11 @@
 -resource asset/texpr_fails.te@texpr_fails
 -resource asset/simple_lang.et@simple_lang
 -resource asset/transformed.et@transformed
+-resource asset/bare_naked.et@bare_naked
 
 
 #--interp
--dce no
--js test.js
+#-dce no
+#-js test.js
+-neko test.n
+-cmd neko test.n

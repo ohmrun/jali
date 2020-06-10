@@ -1,9 +1,9 @@
 package jali.pack;
 
+import stx.fail.PathParseFailure;
 import hxjsonast.Json;
 
 import hxjsonast.Json.JsonValue;
-import stx.parse.term.Json;
 
 enum TermSum<T>{
   TOf(head:Head<T>,rest:Tail<T>);
@@ -14,9 +14,15 @@ abstract Term<T>(TermSum<T>) from TermSum<T> to TermSum<T>{
   static public var _(default,never) = TermLift;
 
   static public function make<T>():Constructor<T>                               return TOf;                               
-  static public function unit<T>()                                              return TOf(Rest,[]);
+  static public function unit<T>():Term<T>                                      return TOf(Rest,[]);
   static public function lift<T>(self:TermSum<T>):Term<T>                       return new Term(self);
-  static public function parse(string:String) return new stx.parse.Jali().parse(string.reader());
+  static public function parse(string:String) 
+      return new stx.parse.Jali()
+        .parse(string.reader())
+        .fold(
+          _ -> __.success(_.with),
+          e -> __.failure(__.fault().of(E_Fs_Path(E_Path_Parse(MalformedSource(e)))))
+        );
 
   @:from static public function fromTArray<T>(arr:Array<T>):Term<T>{
     return TOf(Data(arr),[]);
@@ -43,23 +49,23 @@ abstract Term<T>(TermSum<T>) from TermSum<T> to TermSum<T>{
         }
     }
   }
-  static public function fromJsonSum(val:JsonSum<String>):Term<String>{
-    return switch (val){
-      case JsObject(record) :
-          TOf.make().rest(
-            record.map(
-              __.decouple(
-                (l,r) -> TOf(Code(l),[fromJsonSum(r)])
-              )
-            )
-          );
-      case JsArray(array) :
-          TOf.make().rest(
-            array.map(_ -> fromJsonSum(_))
-          );
-      case JsData(x) : TOf.make().datum(x,__);
-    }
-  }
+  // static public function fromJsonSum(val:JsonSum<String>):Term<String>{
+  //   return switch (val){
+  //     case JsObject(record) :
+  //         TOf.make().rest(
+  //           record.map(
+  //             __.decouple(
+  //               (l,r) -> TOf(Code(l),[fromJsonSum(r)])
+  //             )
+  //           )
+  //         );
+  //     case JsArray(array) :
+  //         TOf.make().rest(
+  //           array.map(_ -> fromJsonSum(_))
+  //         );
+  //     case JsData(x) : TOf.make().datum(x,__);
+  //   }
+  // }
   
   static public function fromMap<V>(map:StdMap<String,V>):Term<V>{
     var parts : Array<Term<V>> = [];
@@ -85,26 +91,41 @@ abstract Term<T>(TermSum<T>) from TermSum<T> to TermSum<T>{
   private var self(get,never):Term<T>;
   private function get_self():Term<T> return lift(this); 
 }
+// private typedef TermInnerApi<T> = {
+//   function head(self:Term<T>)                 : Head<T>;
+//   function tail(self:Term<T>)                 : Tail<T>;
 
+//   function body(self:Term<T>)                 : Option<Term<T>>;
+//   function body_head(self:Term<T>)            : Option<Head<T>>;
+
+
+//   function code_only(self:Term<T>)            : Option<String>;
+//   function code(self:Term<T>)                 : Option<Couple<String,Tail<T>>>;
+//   function code_body(self:Term<T>)            : Option<Couple<String,Term<T>>>;
+
+//   function data_only(self:Term<T>)            : Option<Array<T>>;
+//   function data(self:Term<T>)                 : Option<Couple<Array<T>,Tail<T>>>;
+//   function data_body(self:Term<T>)            : Option<Couple<Array<T>,Term<T>>>;
+
+//   function rest(self:Term<T>)                 : Option<Tail<T>>;
+//   function rest_body(self:Term<T>)            : Option<Term<T>>;
+
+// }
 class TermLift{
+  //static public function into<T,U>(self:Term<T>,lift:TermInnerApi<T> -> (Term<T> -> U)):U{
+   // return lift(null)(self);
+  //}
   static public function head<T>(self:Term<T>){
     return switch(self){
       case TOf(hd, _) : hd;
     }
-  }
-  static public function head_only<T>(self:Term<T>):Option<Head<T>>{
-    return self.cat().snd().is_defined() ? None : self.cat().fst();
   }
   static public function tail<T>(self:Term<T>){
     return switch(self){
       case TOf(_, xs) : __.option(xs).defv([]);
     }
   }
-  static public function tail_body<T>(self:Term<T>){
-    return switch(self){
-      case TOf(_, tail ) : tail.body();
-    }
-  }
+
   static public function code_only<T>(self:Term<T>):Option<String>{
     return self.cat().fst().code();
   }
@@ -128,6 +149,10 @@ class TermLift{
         (head,opt) -> opt.map(__.couple.bind(head))
       )(toCouple(self));
   }
+  static public function body_head<T>(self:Term<T>):Option<Head<T>>{
+    return self.cat().snd().is_defined() ? None : self.cat().fst();
+  }
+
   static public function data_only<T>(self:Term<T>):Option<Array<T>>{
     return self.cat().snd().is_defined() ? None : self.cat().fst().data();
   }
@@ -170,7 +195,6 @@ class TermLift{
   static public function both<T>(self:Term<T>,that:Term<T>):Term<T>{
     return TOf(Rest,[self,that]);
   }
-
   
   
   static public function rest<T>(self:Term<T>):Option<Tail<T>>{

@@ -5145,12 +5145,6 @@ stx_LiftStd.chunk = function(_,v) {
 stx_LiftStd.cell = function(_,v) {
 	return stx_core_Cell.fromT(v);
 };
-stx_LiftStd.report = function(__,err) {
-	var this1 = function() {
-		return stx_core_Reporter.command;
-	};
-	(this1())(err);
-};
 var stx_core_Card = {};
 stx_core_Card._new = function(self) {
 	var this1 = self;
@@ -5835,6 +5829,9 @@ stx_core_Module.prototype = {
 	,Future: function() {
 		return new stx_core__$Module_Ft();
 	}
+	,Map: function() {
+		return new stx_core__$Module_Map();
+	}
 	,__class__: stx_core_Module
 };
 var stx_core__$Module_Ft = function() {
@@ -5853,6 +5850,18 @@ stx_core__$Module_Ft.prototype = $extend(stx_core_pack_Clazz.prototype,{
 		},init);
 	}
 	,__class__: stx_core__$Module_Ft
+});
+var stx_core__$Module_Map = function() {
+	stx_core_pack_Clazz.call(this);
+};
+$hxClasses["stx.core._Module.Map"] = stx_core__$Module_Map;
+stx_core__$Module_Map.__name__ = "stx.core._Module.Map";
+stx_core__$Module_Map.__super__ = stx_core_pack_Clazz;
+stx_core__$Module_Map.prototype = $extend(stx_core_pack_Clazz.prototype,{
+	String: function() {
+		return new haxe_ds_StringMap();
+	}
+	,__class__: stx_core__$Module_Map
 });
 var stx_core_Parameter = {};
 stx_core_Parameter._new = function(self) {
@@ -5881,11 +5890,11 @@ stx_core_Resource.exists = function(str) {
 stx_core_Resource._new = function(str,pos) {
 	if(!stx_core_Resource.exists(str)) {
 		var this1 = stx_core_use_UseNano.fault(stx_core_pack_Wildcard.__,pos);
-		var err = new stx_core_pack_Err(stx_core_use_UseNano.option(stx_core_pack_Wildcard.__,stx_core_pack_FailureSum.ERR_OF("E_ResourceNotFound")),haxe_ds_Option.None,this1);
-		var this1 = function() {
-			return stx_core_Reporter.command;
-		};
-		(this1())(err);
+		var report = stx_core_pack_Option.fromNullT(new stx_core_pack_Err(stx_core_use_UseNano.option(stx_core_pack_Wildcard.__,stx_core_pack_FailureSum.ERR_OF("E_ResourceNotFound")),haxe_ds_Option.None,this1));
+		if(report._hx_index == 0) {
+			var e = report.v;
+			throw haxe_Exception.thrown(e);
+		}
 	}
 	var this1 = str;
 	return this1;
@@ -7048,7 +7057,7 @@ stx_core_lift_LiftFuture.tryAndThenCancelIfNotAvailable = function(ft) {
 var stx_core_lift_LiftIMapToArrayKV = function() { };
 $hxClasses["stx.core.lift.LiftIMapToArrayKV"] = stx_core_lift_LiftIMapToArrayKV;
 stx_core_lift_LiftIMapToArrayKV.__name__ = "stx.core.lift.LiftIMapToArrayKV";
-stx_core_lift_LiftIMapToArrayKV.fromIMap = function(map) {
+stx_core_lift_LiftIMapToArrayKV.toArrayKV = function(map) {
 	var out = [];
 	var _g = map.keyValueIterator();
 	while(_g.hasNext()) {
@@ -7087,6 +7096,24 @@ stx_core_lift_LiftIteratorToIter.toIter = function(it) {
 		return it;
 	}};
 };
+var stx_core_lift_LiftMapConstructors = function() { };
+$hxClasses["stx.core.lift.LiftMapConstructors"] = stx_core_lift_LiftMapConstructors;
+stx_core_lift_LiftMapConstructors.__name__ = "stx.core.lift.LiftMapConstructors";
+stx_core_lift_LiftMapConstructors.term = function(cls) {
+	return new stx_core_lift__$LiftMapConstructors_LiftedMapConstructors();
+};
+var stx_core_lift__$LiftMapConstructors_LiftedMapConstructors = function() {
+	stx_core_pack_Clazz.call(this);
+};
+$hxClasses["stx.core.lift._LiftMapConstructors.LiftedMapConstructors"] = stx_core_lift__$LiftMapConstructors_LiftedMapConstructors;
+stx_core_lift__$LiftMapConstructors_LiftedMapConstructors.__name__ = "stx.core.lift._LiftMapConstructors.LiftedMapConstructors";
+stx_core_lift__$LiftMapConstructors_LiftedMapConstructors.String = function() {
+	return new haxe_ds_StringMap();
+};
+stx_core_lift__$LiftMapConstructors_LiftedMapConstructors.__super__ = stx_core_pack_Clazz;
+stx_core_lift__$LiftMapConstructors_LiftedMapConstructors.prototype = $extend(stx_core_pack_Clazz.prototype,{
+	__class__: stx_core_lift__$LiftMapConstructors_LiftedMapConstructors
+});
 var stx_core_lift_LiftMapToIter = function() { };
 $hxClasses["stx.core.lift.LiftMapToIter"] = stx_core_lift_LiftMapToIter;
 stx_core_lift_LiftMapToIter.__name__ = "stx.core.lift.LiftMapToIter";
@@ -7144,11 +7171,11 @@ stx_core_lift_LiftStringToResource.__name__ = "stx.core.lift.LiftStringToResourc
 stx_core_lift_LiftStringToResource.resource = function(stx,str,pos) {
 	if(!stx_core_Resource.exists(str)) {
 		var this1 = stx_core_use_UseNano.fault(stx_core_pack_Wildcard.__,pos);
-		var err = new stx_core_pack_Err(stx_core_use_UseNano.option(stx_core_pack_Wildcard.__,stx_core_pack_FailureSum.ERR_OF("E_ResourceNotFound")),haxe_ds_Option.None,this1);
-		var this1 = function() {
-			return stx_core_Reporter.command;
-		};
-		(this1())(err);
+		var report = stx_core_pack_Option.fromNullT(new stx_core_pack_Err(stx_core_use_UseNano.option(stx_core_pack_Wildcard.__,stx_core_pack_FailureSum.ERR_OF("E_ResourceNotFound")),haxe_ds_Option.None,this1));
+		if(report._hx_index == 0) {
+			var e = report.v;
+			throw haxe_Exception.thrown(e);
+		}
 	}
 	var this1 = str;
 	return this1;
@@ -8271,6 +8298,22 @@ stx_core_use_UseNano.fudge = function(future) {
 		result = haxe_ds_Option.Some(x);
 	});
 	return result;
+};
+stx_core_use_UseNano.raise = function(wildcard,e) {
+	throw haxe_Exception.thrown(e);
+};
+stx_core_use_UseNano.report = function(wildcard,report) {
+	if(report._hx_index == 0) {
+		var e = report.v;
+		throw haxe_Exception.thrown(e);
+	}
+};
+stx_core_use_UseNano.definition = function(wildcard,t) {
+	return js_Boot.getClass(t);
+};
+stx_core_use_UseNano.vblock = function(wildcard,t) {
+	return function() {
+	};
 };
 var stx_core_use_UseOptionNano = function() { };
 $hxClasses["stx.core.use.UseOptionNano"] = stx_core_use_UseOptionNano;

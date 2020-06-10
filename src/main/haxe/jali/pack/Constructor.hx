@@ -16,7 +16,7 @@ typedef ConstructorDef<T> = Head<T> -> Tail<T> -> Term<T>;
   /**
     constructor
   **/
-  public function last():Tail<T>{
+  public inline function last():Tail<T>{
     return Tail.unit();
   }
   /**

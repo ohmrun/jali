@@ -23,4 +23,4 @@ import stx.parse.jali.Term;
 
 using jali.Pack;
 
-using stx.show.Lift;
+using stx.Show;

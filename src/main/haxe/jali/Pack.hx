@@ -9,6 +9,7 @@ typedef Lang<T>           = jali.pack.Lang<T>;
 
 typedef TermSum<T>        = jali.pack.Term.TermSum<T>;
 typedef Term<T>           = jali.pack.Term<T>;
+typedef Jali<T>           = Term<T>;
 
 typedef ConstructorDef<T> = jali.pack.Constructor.ConstructorDef<T>;
 typedef Constructor<T>    = jali.pack.Constructor<T>;
