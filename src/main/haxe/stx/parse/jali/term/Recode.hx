@@ -4,9 +4,9 @@ class Recode extends stx.parse.pack.parser.term.Base<String,Lang<String>,Parser<
   public function new(delegate,?id){
     super(delegate,id);
   }
-  override function do_parse(ipt:Input<String>){
+  override function doApplyII(ipt:Input<String>,cont:Terminal<ParseResult<String,Lang<String>>,Noise>){
     return this.delegation.then(
-      (x) -> Lit(Label(x))
-    ).parse(ipt);
+      (x) -> (Lit(Label(x)):Lang<String>)
+    ).applyII(ipt,cont);
   }
 }

@@ -1,11 +1,12 @@
-package jali;
+package eu.ohmrun;
 
-typedef Grammar<T>        = jali.pack.Grammar<T>;
+typedef GrammarApi<T>     = eu.ohmrun.jali.Grammar.GrammarApi<T>;
+typedef Grammar<T>        = eu.ohmrun.jali.Grammar<T>;
 
-typedef Rule<T>           = jali.pack.Rule<T>;
+typedef Rule<T>           = eu.ohmrun.jali.Rule<T>;
 
-typedef LangSum<T>        = jali.pack.Lang.LangSum<T>;
-typedef Lang<T>           = jali.pack.Lang<T>;
+typedef LangSum<T>        = eu.ohmrun.jali.Lang.LangSum<T>;
+typedef Lang<T>           = eu.ohmrun.jali.Lang<T>;
 
 class LiftJali{
 
@@ -16,10 +17,10 @@ class LiftJali{
     return arr.map(Lit);
   }
   static public function alts<T>(arr:Array<Lang<T>>):Lang<T>{
-    return arr.rfold1(Alt.fn().swap()).fudge();
+    return stx.lift.ArrayLift.rfold1(arr,Alt.fn().swap()).fudge();
   }
   static public function seqs<T>(arr:Array<Lang<T>>):Lang<T>{
-    return arr.rfold1(Seq.fn().swap()).fudge();
+    return stx.lift.ArrayLift.rfold1(arr,Seq.fn().swap()).fudge();
   }
   static public function app<T>(key:String):Lang<T>{
     return App(key);

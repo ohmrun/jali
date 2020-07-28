@@ -4,13 +4,13 @@ import stx.parse.pack.parser.term.Identifier;
 
 class Id extends stx.parse.pack.parser.term.Base<String,Lang<String>,Parser<String,Lang<String>>>{
 
-  override function do_parse(ipt:Input<String>):ParseResult<String,Lang<String>>{
+  override function doApplyII(ipt:Input<String>,cont:Terminal<ParseResult<String,Lang<String>>,Noise>):Work{
     var args = ipt.memo.symbols.get(this);
     return switch(args){
-      case Label(code) : 
-        new Identifier(code).asParser().then(Lit.fn().compose(Label)).parse(ipt);
+      case Value(code) : 
+        new Identifier(code).asParser().then(Lit.fn().compose(Value)).then(Lang.lift).applyII(ipt,cont);
       default : 
-        ipt.fail('malformed input $args');
+        cont.value(ipt.fail('malformed input $args')).serve();
     }
   }
 }

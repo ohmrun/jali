@@ -8,7 +8,7 @@
 -lib stx_nano
 -lib stx_assert
 -lib stx_log
--lib stx_std
+-lib stx_ext
 -lib stx_parse
 -lib stx_asys
 
@@ -20,16 +20,16 @@
 
 -D stx_test_focus
 
--resource asset/texpr.et@texpr
--resource asset/texpr2.et@texpr2
--resource asset/texpr_fails.te@texpr_fails
--resource asset/simple_lang.et@simple_lang
--resource asset/transformed.et@transformed
--resource asset/bare_naked.et@bare_naked
+-resource asset/grammar.pml@grammar
+-resource asset/use_grammar.pml@use_grammar
 
 
-#--interp
+--interp
 #-dce no
 #-js test.js
--neko test.n
--cmd neko test.n
+#-neko test.n
+#-cmd neko test.n
+#--interp
+#--jvm bin/Main.jar
+#-cmd java -jar bin/Main.jar
+#--cs bin/cs

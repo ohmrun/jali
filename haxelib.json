@@ -18,7 +18,8 @@
         "stx_nano": "",
         "hscript": "",
         "hxjsonast": "",
-        "stx_parse" : ""
+        "stx_parse" : "",
+        "stx_ext": ""
     },
     "classPath": "src/main/haxe"
 }

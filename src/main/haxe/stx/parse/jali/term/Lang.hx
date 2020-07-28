@@ -1,6 +1,6 @@
 package stx.parse.jali.term;
 
-import jali.pack.Lang in LangA;
+import eu.ohmrun.jali.Lang in LangA;
 
 class Lang<T> extends stx.parse.pack.parser.term.Base<T,LangA<T>,Parser<T,LangA<T>>>{
   var grammar : Grammar<T>;
@@ -8,7 +8,7 @@ class Lang<T> extends stx.parse.pack.parser.term.Base<T,LangA<T>,Parser<T,LangA<
     super(id);
     this.grammar = grammar;
   }
-  override function do_parse(ipt:Input<T>):ParseResult<T,LangA<T>>{
-    return grammar.of('main').parse(ipt);
+  override function doApplyII(ipt:Input<T>,cont:Terminal<ParseResult<T,LangA<T>>,Noise>):Work{
+    return grammar.of('main').applyII(ipt,cont);
   }
 }

@@ -6,9 +6,9 @@ class Tag<T,U> extends stx.parse.pack.parser.term.Base<T,Lang<U>,Parser<T,Lang<U
     super(delegation,id);
     this.label = label;
   }
-  override function do_parse(ipt:Input<T>){
+  override function doApplyII(ipt:Input<T>,cont:Terminal<ParseResult<T,Lang<U>>,Noise>):Work{
     return this.delegation.then(
-      (v) -> Tag(label,v)
-    ).parse(ipt);
+      (v) -> (Tag(label,v):Lang<U>)
+    ).applyII(ipt,cont);
   }
 }

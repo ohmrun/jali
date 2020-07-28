@@ -1,4 +1,4 @@
-package jali.pack;
+package eu.ohmrun.jali;
 
 enum LangSum<T>{
   
@@ -20,8 +20,13 @@ enum LangSum<T>{
   //Not?
   //Has(e:Term<T>,o);//?if else?
 
+
   //Put(name:String,val:Lang<T>);?//put in the symbol table
-  //Get(name:String);?//restore from symbol table
+  Get(e:Lang<T>,res:Lang<T>);//parse the left and produce the right
+  //Use?
+  Sip(e:Lang<T>);//swallow the result
+
+  Def(name:String,lang:Map<String,Lang<T>>);
 }
 
 abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
@@ -57,6 +62,7 @@ abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
     var f = mod.bind(fn);
     return fn(switch self {
       case One              : One;
+      case Get(e0,e1)       : Get(f(e0),f(e1));
       case App(name, args)  : App(name,args);
       case Tag(name, val)   : Tag(name,f(val));
       case Lit(e)           : Lit(e);
@@ -65,8 +71,11 @@ abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
       case Alt(l, r)        : Alt(f(l),f(r));
       case Opt(e)           : Opt(f(e));
       case Mem(e)           : Mem(f(e));
+      case Sip(e)           : Sip(f(e));
+      case Def(name,lang)   : Def(name,lang.map_arw(fn)(new Map()));
     });
   }
+  /*
   static public function fold<T,Z>(
     one:Void->Z,
     app:String->Z->Z,
@@ -77,11 +86,12 @@ abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
     alt:Z->Z->Z,
     opt:Z->Z,
     mem:Z->Z,
-
+    get:Z->Z->Z,
+    sip:
     term: Expr<T> -> Z,
     v:LangSum<T>
   ){
-    var sub = fold.bind(one,app,tag,lit,seq,rep,alt,opt,mem,term);
+    var sub = fold.bind(one,app,tag,lit,seq,rep,alt,opt,mem,get,term);
     return switch v {
       case One              : one();
       case App(name, args)  : app(name,term(args));
@@ -92,25 +102,37 @@ abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
       case Alt(l, r)        : alt(sub(l),sub(r));
       case Opt(e)           : opt(sub(e));
       case Mem(e)           : mem(sub(e));
+      case Get(e0,e1)       : get(sub(e0),sub(e1));
     }
-  }
+  }*/
   public function toString(){
+    return toString_with(Std.string);
+  }
+  public function toString_with(fn:T->String){
+    var f   = (_:Lang<T>) -> _.toString_with(fn);
+    var fI  = (_:Expr<T>) -> _.toString_with(fn);
     return switch this {
       case One              : '.';
+      case Sip(e)           : 'Sip(${f(e)})';
       case App(name, args)  : 
         var arg = 
           __.option(args)
-            .map(_ -> _.toString())
+            .map(fI)
             .map(_ -> ' ($_)')
             .defv('');
-      '$name$arg';
-      case Tag(name, val)   : '#$name ${val.toString()}';
-      case Lit(e)           : 'e.toString()';
-      case Seq(l, r)        : '$l $r';
-      case Rep(e)           : '${e}*';
-      case Alt(l, r)        : '$l | $r';
-      case Opt(e)           : '${e}?';
-      case Mem(e)           : '@${e}';
+
+      __.option(args).is_defined() ? 'App($name,$arg)' : 'App($name)';
+      case Tag(name, val)   : 'Tag($name ${f(val)})';
+      case Lit(e)           : 
+        var representation = fI(e);
+        'Lit(${representation})';
+      case Seq(l, r)        : '${f(l)} ${f(r)}';
+      case Rep(e)           : 'Rep(${f(e)})';
+      case Alt(l, r)        : 'Alt(${f(l)} ${f(r)})';
+      case Opt(e)           : 'Opt(${f(e)})';
+      case Mem(e)           : 'Mem(${f(e)})';
+      case Get(l, r)        : 'Get(${f(l)} :: ${f(r)})';
+      case Def(name,lang)   : 'Def($name,$lang)';
     }
   }
 }

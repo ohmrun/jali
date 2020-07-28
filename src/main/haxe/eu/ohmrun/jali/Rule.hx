@@ -1,4 +1,4 @@
-package jali.pack;
+package eu.ohmrun.jali;
 
 class Rule<T> extends haxe.ds.StringMap<Lang<T>>{
   public var name : String;
