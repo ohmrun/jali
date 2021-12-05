@@ -1,5 +1,5 @@
 -main Main
-
+-D no-deprecation-warnings
 
 #--macro Main.boot()
 
@@ -8,13 +8,13 @@
 -lib stx_nano
 -lib stx_assert
 -lib stx_log
--lib stx_ext
+#-lib stx_ext
 -lib stx_parse
--lib stx_asys
+#-lib stx_asys
 
 
 -lib hscript 
--lib pml
+-lib pml:0.2.0
 
 -cp src/main/haxe
 
@@ -24,12 +24,19 @@
 -resource asset/use_grammar.pml@use_grammar
 
 
---interp
+#--interp
 #-dce no
-#-js test.js
-#-neko test.n
-#-cmd neko test.n
+#--each 
+#--macro define("sys")
+#-lib hxnodejs
+#--js bin/main.js
+#--cmd node bin/main.js
+
+#--next
+-neko test.n
+-cmd neko test.n
 #--interp
 #--jvm bin/Main.jar
 #-cmd java -jar bin/Main.jar
 #--cs bin/cs
+#src/main/hxml/hl.hxml

@@ -74,7 +74,7 @@ class GeneratorTest extends haxe.unit.TestCase{
     }
     var clazz   = ModuleTypeA.make(rule.name).declare_class(
       fields,
-      CTypeA.path('stx.prs.pack.Parse'.split("."))
+      CTypeA.path('stx.prs.Parse'.split("."))
     );    
   }
   static public function prim_from_string(str:String){

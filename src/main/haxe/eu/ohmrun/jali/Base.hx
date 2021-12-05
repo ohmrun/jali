@@ -4,7 +4,7 @@ import stx.parse.jali.term.Regex;
 import stx.parse.jali.term.Stash;
 import stx.parse.jali.term.Id;
 
-class Base extends GrammarApi<String>{
+class Base extends GrammarCls<String>{
   public function new(name:String,?rest){
     super(name,rest);
     this.set('id',    new Id().asParser());

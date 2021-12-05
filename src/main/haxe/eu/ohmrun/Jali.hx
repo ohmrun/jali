@@ -1,6 +1,6 @@
 package eu.ohmrun;
 
-typedef GrammarApi<T>     = eu.ohmrun.jali.Grammar.GrammarApi<T>;
+typedef GrammarCls<T>     = eu.ohmrun.jali.GrammarCls<T>;
 typedef Grammar<T>        = eu.ohmrun.jali.Grammar<T>;
 
 typedef Rule<T>           = eu.ohmrun.jali.Rule<T>;
@@ -31,4 +31,11 @@ class LiftJali{
   static public function lit<T>(key:Expr<T>):Lang<T>{
     return Lit(key);
   }
+}
+class Jali{
+  #if (test==jali)
+  static public function log(wildcard:stx.nano.Wildcard):stx.Log{
+    return new stx.Log().tag("eu.ohmrun.jali");
+  }
+  #end
 }

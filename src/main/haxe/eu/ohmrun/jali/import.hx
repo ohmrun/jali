@@ -1,23 +1,26 @@
 package eu.ohmrun.jali;
 
+import haxe.Constraints.IMap;
+import haxe.ds.Map;
+import haxe.ds.StringMap;
+
 using stx.lift.ArrayLift;
 using stx.Pico;
 using stx.Nano;
 using stx.Assert;
-using stx.Ext;
-using stx.Arw;
-using stx.parse.Pack;
-using stx.Async;
+using stx.Stream;
+
+using eu.ohmrun.Fletcher;
+using stx.Parse;
 
 
-import stx.ext.alias.StdMap;
+import haxe.ds.Map as StdMap;
 
-
-import stx.parse.pack.parser.term.Delegate;
-import stx.parse.pack.parser.term.Regex;
-import stx.parse.pack.parser.term.LAnon;
-import stx.parse.pack.parser.term.Succeed;
-import stx.parse.pack.parser.term.Failed;
+import stx.parse.parser.term.Delegate;
+import stx.parse.parser.term.Regex;
+import stx.parse.parser.term.LAnon;
+import stx.parse.parser.term.Succeed;
+import stx.parse.parser.term.Failed;
 
 
 import stx.parse.jali.Term;

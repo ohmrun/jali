@@ -13,13 +13,18 @@
     "version": "0.1.0",
     "url": "https://github.com/0b1kn00b/stx_pointwise",
     "dependencies": {
-        "tink_core": "",
-        "stx_pico": "",
-        "stx_nano": "",
-        "hscript": "",
-        "hxjsonast": "",
-        "stx_parse" : "",
-        "stx_ext": ""
+        "tink_core"         : "git:https://github.com/haxetink/tink_core.git",
+
+        "stx_pico"          : "git:https://github.com/ohmrun/stx_pico.git",
+        "stx_nano"          : "git:https://github.com/ohmrun/stx_nano.git",
+        "stx_fn"            : "git:https://github.com/ohmrun/stx_fn.git",
+
+        "stx_log"           : "git:https://github.com/ohmrun/stx_log.git",
+        "stx_assert"        : "git:https://github.com/ohmrun/stx_assert.git",
+
+        "hscript"           : "git:https://github.com/HaxeFoundation/hscript.git",
+        "hxjsonast"         : "git:https://github.com/nadako/hxjsonast.git",
+        "stx_parse"         : "git:https://github.com/ohmrun/stx_parse.git"
     },
     "classPath": "src/main/haxe"
 }

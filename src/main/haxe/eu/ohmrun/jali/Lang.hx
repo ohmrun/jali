@@ -26,7 +26,7 @@ enum LangSum<T>{
   //Use?
   Sip(e:Lang<T>);//swallow the result
 
-  Def(name:String,lang:Map<String,Lang<T>>);
+  //Def(name:String,lang:Map<String,Lang<T>>);
 }
 
 abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
@@ -56,7 +56,7 @@ abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
   public function tag(str):Lang<T>                      return Tag(str,this);
 
   public function toParser(grammar:Grammar<T>):Parser<T,Lang<T>>{
-    return new LAnon(grammar.apply.bind(this)).asParser();
+    return new LAnon(grammar.produce.bind(this)).asParser();
   }
   static public function mod<T>(fn:Lang<T> -> Lang<T>,self:LangSum<T>):Lang<T>{
     var f = mod.bind(fn);
@@ -72,7 +72,7 @@ abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
       case Opt(e)           : Opt(f(e));
       case Mem(e)           : Mem(f(e));
       case Sip(e)           : Sip(f(e));
-      case Def(name,lang)   : Def(name,lang.map_arw(fn)(new Map()));
+      //case Def(name,lang)   : Def(name,lang.copy().mod(fn));
     });
   }
   /*
@@ -132,7 +132,7 @@ abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
       case Opt(e)           : 'Opt(${f(e)})';
       case Mem(e)           : 'Mem(${f(e)})';
       case Get(l, r)        : 'Get(${f(l)} :: ${f(r)})';
-      case Def(name,lang)   : 'Def($name,$lang)';
+      //case Def(name,lang)   : 'Def($name,$lang)';
     }
   }
 }

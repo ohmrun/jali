@@ -1,8 +1,8 @@
 using stx.Pico;
 using stx.Nano;
-using stx.Ext;
 
-using stx.parse.Pack;
+
+using stx.Parse;
 
 using eu.ohmrun.Jali;
 
@@ -13,6 +13,9 @@ class Main {
     return Test.boot();
   }
   static public function main(){
+    var f = __.log().global;
+        f.includes.push("eu/ohmrun/jali");
+        f.includes.push("eu/ohmrun/pml");
     Test.main();
   }
 }

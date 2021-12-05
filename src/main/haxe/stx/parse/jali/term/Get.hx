@@ -1,14 +1,14 @@
 package stx.parse.jali.term;
 
-class Get<T> extends stx.parse.pack.parser.term.Delegate<T,Lang<T>>{
-  private var result : Lang<T>;
-  public function new(delegate,result:Lang<T>,?id){
+class Get<T> extends stx.parse.parser.term.Delegate<T,Lang<T>>{
+  var stored : Lang<T>;
+  public function new(delegate,stored:Lang<T>,?id){
     super(delegate,id);
-    this.result = result;
+    this.stored = stored;
   }
-  override function doApplyII(ipt:Input<T>,cont:Terminal<ParseResult<T,Lang<T>>,Noise>){
+  override inline function defer(ipt:Input<T>,cont:Terminal<ParseResult<T,Lang<T>>,Noise>){
     return this.delegation.then(
-      (_) -> result
-    ).applyII(ipt,cont);
+      (_) -> stored
+    ).defer(ipt,cont);
   }
 }
