@@ -11,7 +11,7 @@ import stx.parse.jali.term.Get;
 @:forward abstract Grammar<T>(GrammarCls<T>) from GrammarCls<T> to GrammarCls<T>{
   public function new(name:String) this = new GrammarCls(name,null,null);
 
-  public function fromExprs(map:StdMap<String,Lang<T>>){
+  public function fromPExprs(map:StdMap<String,Lang<T>>){
     for( key => val in map){
       this.set(key,val.toParser(self));
     }

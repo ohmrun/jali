@@ -30,13 +30,13 @@ class GrammarCls<T> extends ParserCls<T,Lang<T>> implements IMap<String,Parser<T
       case Mem(e)           : new Memo(lazy(e)).asParser();
       case App(name,null)   : of(name);
       case App(name,args)   : new Stash(of(name),args).asParser();
-      case Tag(name,e)      : new Tag(name,produce(e)).asParser();
+      case Tag(name,e)      : new stx.parse.jali.term.Tag(name,produce(e)).asParser();
       case Seq(l, r)        : lazy(l).and(lazy(r)).then(__.decouple(seq));// until Lit? or fail if lit not first?
       case Alt(l, r)        : lazy(l).or(lazy(r));
-      case Rep(e)           : lazy(e).many().then(arr -> arr.lfold(Lang.then,Lit(Empty)));
+      case Rep(e)           : lazy(e).many().then(arr -> arr.lfold(Lang.then,Lit(PEmpty)));
       case Opt(e)           : lazy(e).option().then(opt -> opt.defv(seed));
       case Get(e0,e1)       : new Get(lazy(e0),e1).asParser();
-      case Sip(e)           : new Get(lazy(e),Lit(Empty)).asParser();
+      case Sip(e)           : new Get(lazy(e),Lit(PEmpty)).asParser();
       // case Def(name,lang)   : 
       //   var grammar = new Grammar(name);
       //   for(key => val in lang){
@@ -53,15 +53,15 @@ class GrammarCls<T> extends ParserCls<T,Lang<T>> implements IMap<String,Parser<T
   }
   public function seq(l:Lang<T>,r:Lang<T>):Lang<T>{
     return switch([l,r]){
-      case [Lit(Empty),r]   : r;
-      case [l,Lit(Empty)]   : l;
-      case [Lit(l),Lit(r)]  : Lit(Group(Cons(l,Cons(r,Nil))));
+      case [Lit(PEmpty),r]   : r;
+      case [l,Lit(PEmpty)]   : l;
+      case [Lit(l),Lit(r)]  : Lit(PGroup(Cons(l,Cons(r,Nil))));
       default               : Seq(l,r);
     }
   }
   public function alt(l:Lang<T>,r:Lang<T>):Lang<T>{
     return switch([l,r]){
-      case [Lit(l),Lit(r)]  : Lit(Group(Cons(l,Cons(r,Nil))));
+      case [Lit(l),Lit(r)]  : Lit(PGroup(Cons(l,Cons(r,Nil))));
       case [One,r]          : r;
       default               : Alt(l,r);
     }
@@ -71,8 +71,8 @@ class GrammarCls<T> extends ParserCls<T,Lang<T>> implements IMap<String,Parser<T
     var b = a.def(def.bind(key));
     return b;
   }
-  public function defer(ipt:ParseInput<T>,cont:Terminal<ParseResult<T,Lang<T>>,Noise>):Work{
-    return this.of('main').defer(ipt,cont);
+  public function apply(ipt:ParseInput<T>){
+    return this.of('main').apply(ipt);
   }
   public inline function get(key:String){
     return this.map.get(key);

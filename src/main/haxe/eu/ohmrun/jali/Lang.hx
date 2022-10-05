@@ -2,11 +2,11 @@ package eu.ohmrun.jali;
 
 enum LangSum<T>{
   
-  App(name:String,?args:Expr<T>);
+  App(name:String,?args:PExpr<T>);
   Tag(name:String,val:Lang<T>);
   
   One;//what comes in goes out
-  Lit(e:Expr<T>);//replace input with this
+  Lit(e:PExpr<T>);//replace input with this
 
   Seq(l:Lang<T>,r:Lang<T>);
   Alt(l:Lang<T>,r:Lang<T>);
@@ -35,7 +35,7 @@ abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
   
   public function snoc(that:Lang<T>):Lang<T>{
     return switch([this,that]){
-      case [Lit(e0),Lit(e1)] : Lit(Group(Cons(e0,Cons(e1,Nil))));
+      case [Lit(e0),Lit(e1)] : Lit(PGroup(Cons(e0,Cons(e1,Nil))));
       default                : Seq(this,that);
     }
   }
@@ -88,7 +88,7 @@ abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
     mem:Z->Z,
     get:Z->Z->Z,
     sip:
-    term: Expr<T> -> Z,
+    term: PExpr<T> -> Z,
     v:LangSum<T>
   ){
     var sub = fold.bind(one,app,tag,lit,seq,rep,alt,opt,mem,get,term);
@@ -110,7 +110,7 @@ abstract Lang<T>(LangSum<T>) from LangSum<T> to LangSum<T>{
   }
   public function toString_with(fn:T->String){
     var f   = (_:Lang<T>) -> _.toString_with(fn);
-    var fI  = (_:Expr<T>) -> _.toString_with(fn);
+    var fI  = (_:PExpr<T>) -> _.toString_with(fn);
     return switch this {
       case One              : '.';
       case Sip(e)           : 'Sip(${f(e)})';

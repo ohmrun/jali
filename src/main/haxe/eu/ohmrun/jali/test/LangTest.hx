@@ -1,7 +1,7 @@
 package jali.test;
 
 class LangTest extends haxe.unit.TestCase{
-  var lexer : Grammar<String> = new Grammar("SimpleParser").fromExprs(
+  var lexer : Grammar<String> = new Grammar("SimpleParser").fromPExprs(
     [
       'p_star_id'   => 'id'.app1(__.t().code("x")),
       'p_plus_id'   => 'id'.app1(__.t().code("+")),
@@ -40,8 +40,8 @@ class LangTest extends haxe.unit.TestCase{
     assertTrue(out.isSuccess());
   }
 }
-enum Expr{
-  Mult(l:Expr,r:Expr);
-  Plus(l:Expr,r:Expr);
+enum PExpr{
+  Mult(l:PExpr,r:PExpr);
+  Plus(l:PExpr,r:PExpr);
   Num(v:Int);
 }

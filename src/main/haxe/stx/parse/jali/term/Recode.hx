@@ -5,6 +5,6 @@ class Recode extends stx.parse.parser.term.Then<String,String,Lang<String>>{
     super(delegate,id);
   }
   inline function transform(string:String){
-    return (Lit(Label(string)):Lang<String>);
+    return (Lit(PLabel(string)):Lang<String>);
   }
 }

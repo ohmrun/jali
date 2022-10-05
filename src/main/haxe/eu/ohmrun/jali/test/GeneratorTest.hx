@@ -1,11 +1,11 @@
 package jali.test;
 
-import jali.test.GeneratorTest.ExprAs.*;
+import jali.test.GeneratorTest.PExprAs.*;
 
 import hscript.Async;
 import hscript.Bytes;
 import hscript.Checker;
-import hscript.Expr;
+import hscript.PExpr;
 import hscript.Interp;
 import hscript.Macro;
 import hscript.Parser;
@@ -116,103 +116,103 @@ class GeneratorTest extends haxe.unit.TestCase{
   }
 }
 
-abstract ExprA(Expr) from Expr to Expr{
+abstract PExprA(PExpr) from PExpr to PExpr{
   public function new(self) this = self;
-  static public function lift(self:Expr):ExprA return new ExprA(self);
+  static public function lift(self:PExpr):PExprA return new PExprA(self);
   
 
-  static public function id(str):ExprA{
+  static public function id(str):PExprA{
     return EIdent(str);
   }
-  static public function vr(n,?t,?e):ExprA{
+  static public function vr(n,?t,?e):PExprA{
     return EVar(n,t,e);
   }
   
 
-  public function prj():Expr return this;
-  private var self(get,never):ExprA;
-  private function get_self():ExprA return lift(this);
+  public function prj():PExpr return this;
+  private var self(get,never):PExprA;
+  private function get_self():PExprA return lift(this);
 }
-class ExprAs{
-  static public function econst(c:ConstA):ExprA{
+class PExprAs{
+  static public function econst(c:ConstA):PExprA{
     return EConst(c);
   }
-  static public function eident(str:String):ExprA{
+  static public function eident(str:String):PExprA{
     return EIdent(str);
   }
-  static public function evar(n : String, ?t : CType, ?e : Expr ):ExprA{
+  static public function evar(n : String, ?t : CType, ?e : PExpr ):PExprA{
     return EVar(n,t,e);
   }
-  static public function eparent(e:Expr):ExprA{
+  static public function eparent(e:PExpr):PExprA{
     return EParent(e);
   }
-  static public function eblock(arr:Array<Expr>):ExprA{
+  static public function eblock(arr:Array<PExpr>):PExprA{
     return EBlock(arr.prj());
   }
-  static public function efield(e,f):ExprA{
+  static public function efield(e,f):PExprA{
     return EField(e,f);
   }
-  static public function ebinop(op,e1,e2):ExprA{
+  static public function ebinop(op,e1,e2):PExprA{
     return EBinop( op, e1, e2 );
   }
-  static public function eunop(op,prefix,e):ExprA{
+  static public function eunop(op,prefix,e):PExprA{
     return EUnop( op, prefix, e );
   }
-  static public function ecall(e,params):ExprA{
+  static public function ecall(e,params):PExprA{
     return ECall(e,params);
   }
-  static public function eif(cond,e1,?e2):ExprA{
+  static public function eif(cond,e1,?e2):PExprA{
     return EIf(cond,e1,e2);
   }
-  static public function ewhile(e1,e2):ExprA{
+  static public function ewhile(e1,e2):PExprA{
     return EWhile(e1,e2);
   }
-  static public function efor(v,it,e):ExprA{
+  static public function efor(v,it,e):PExprA{
     return EFor(v,it,e);
   }
-  static public function ebreak():ExprA{
+  static public function ebreak():PExprA{
     return EBreak;
   }
-  static public function econtinue():ExprA{
+  static public function econtinue():PExprA{
     return EContinue;
   }
-  static public function efunction(args,e,?name,?ret):ExprA{
+  static public function efunction(args,e,?name,?ret):PExprA{
     return EFunction(args,e,name,ret);
   }
-  static public function ereturn(?e:Expr):ExprA{
+  static public function ereturn(?e:PExpr):PExprA{
     return EReturn(e);
   }
-  static public function earray(e:Expr,index:Expr):ExprA{
+  static public function earray(e:PExpr,index:PExpr):PExprA{
     return EArray(e,index);
   }
-  static public function earray_decl(e:Array<Expr>):ExprA{
+  static public function earray_decl(e:Array<PExpr>):PExprA{
     return EArrayDecl( e.prj() );
   }
-  static public function enew(cl:String,params:Array<Expr>):ExprA{
+  static public function enew(cl:String,params:Array<PExpr>):PExprA{
     return ENew( cl , params.prj() );
   }
-  static public function ethrow(?e:Expr):ExprA{
+  static public function ethrow(?e:PExpr):PExprA{
     return EThrow(e);
   }
-  static public function etry(e:Expr,v,t,ecatch):ExprA{
+  static public function etry(e:PExpr,v,t,ecatch):PExprA{
     return ETry(e,v,t,ecatch);
   }
-  static public function eobject(fl:Array<Couple<String,Expr>>):ExprA{
+  static public function eobject(fl:Array<Couple<String,PExpr>>):PExprA{
     return EObject(fl.map(tp -> {name : tp.fst(), e : tp.snd() }).prj());
   }
-  static public function eternary(cond,e1,e2):ExprA{
+  static public function eternary(cond,e1,e2):PExprA{
     return ETernary( cond, e1, e2);
   }
-  static public function eswitch(e,cases:Array<Couple<Array<Expr>,Expr>>,?defaultExpr):ExprA{
-    return ESwitch(e,cases.map(tp -> { values : tp.fst().prj(), expr : tp.snd() } ).prj(),defaultExpr);
+  static public function eswitch(e,cases:Array<Couple<Array<PExpr>,PExpr>>,?defaultPExpr):PExprA{
+    return ESwitch(e,cases.map(tp -> { values : tp.fst().prj(), expr : tp.snd() } ).prj(),defaultPExpr);
   }
-  static public function edo_while(cond:Expr,e:Expr):ExprA{
+  static public function edo_while(cond:PExpr,e:PExpr):PExprA{
     return EDoWhile(cond,e);
   }
-  static public function emeta(name: String, args:Array<Expr>,e:Expr):ExprA{
+  static public function emeta(name: String, args:Array<PExpr>,e:PExpr):PExprA{
     return EMeta(name,args.prj(),e);
   }
-  static public function echecktype(e:Expr,t:CType):ExprA{
+  static public function echecktype(e:PExpr,t:CType):PExprA{
     return ECheckType(e,t);
   }
 }
@@ -259,7 +259,7 @@ abstract FieldKindA(FieldKind) from FieldKind to FieldKind{
   }
 }
 abstract ArgumentA(Argument) from Argument to Argument{
-  static public function make(name:String,?value:Expr, ?t, ?opt = false):ArgumentA{
+  static public function make(name:String,?value:PExpr, ?t, ?opt = false):ArgumentA{
     return { name : name, t : t, opt : opt, value : value };
   }
 }

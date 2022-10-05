@@ -14,7 +14,7 @@
 
 
 -lib hscript 
--lib pml:0.2.0
+-lib pml
 
 -cp src/main/haxe
 

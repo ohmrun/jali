@@ -1,0 +1,30 @@
+{
+  "build" : {
+    "-D" : [
+      "no-deprecation-warnings"
+    ],
+    "-resource" : [
+      "asset/grammar.pml@grammar",
+      "asset/use_grammar.pml@use_grammar"
+    ],
+    "-lib" : ["tink_core","hxjsonast","hscript","stx_pico","stx_nano","stx_fn","stx_assert","stx_parse","pml","stx_asys","stx_test"],
+    "-cp"  : ["src/main/haxe"],
+    "unit" : {
+      "--macro" : [
+        "include('eu.ohmrun.Jali',true,[])",
+        "include('eu.ohmrun.Jali',true,[])",
+        "include('stx.parse.jali.Term',true,[])",
+        "include('stx.parse.jali.term',true,[])"
+      ],
+      "interp"  : {
+        "--interp" : true
+      }
+    },
+    "main" : {
+      "-main"     : "Main",
+      "interp"  : {
+        "--interp"  : true
+      } 
+    }
+  }
+}

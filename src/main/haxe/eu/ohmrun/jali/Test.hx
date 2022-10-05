@@ -10,7 +10,7 @@ import jali.test.*;
 
 class Test{
   static public macro function boot(){
-    __.test(
+    __.test().run(
       [
         new OtherTest()
       ].last().toArray()
@@ -18,7 +18,7 @@ class Test{
     return macro {};
   }
   static public function main(){
-    __.test([
+    __.test().run([
       //   new LangTest(),
       //   new GeneratorTest(),
             new OtherTest(),
@@ -56,7 +56,7 @@ class BareNakedTest extends haxe.unit.TestCase{
         var rhs = interp(r);
         trace('$lhs * $rhs');
         return lhs * rhs;
-      case Tag("Num",Lit(Label(str))) : 
+      case Tag("Num",Lit(PLabel(str))) : 
         Std.parseFloat(str);
       case Tag("Bracket",inner) : 
         interp(inner);
@@ -70,14 +70,14 @@ class BareNakedTest extends haxe.unit.TestCase{
     return switch(lang){
       case Tag("Plus", Seq(l,r) )     : interp(l) + interp(r);
       case Tag("Mult", Seq(l,r) )     : interp(l) * interp(r);
-      case Tag("Num",Lit(Label(str))) : Std.parseFloat(str);
+      case Tag("Num",Lit(PLabel(str))) : Std.parseFloat(str);
       case Tag("Bracket",inner)       : interp(inner);
       default                         : throw 'fail: $lang';
     }
   }
 }
 class OtherTest extends haxe.unit.TestCase{
-  public function testEmptyParse(){
+  public function testPEmptyParse(){
     
   }
 }
@@ -86,7 +86,7 @@ class PmlParser{
   private function new(){
 
   }
-  static public function compile(expr:Expr<Atom>){
+  static public function compile(expr:PExpr<Atom>){
     trace(expr);
     var parser = new PmlParser();
         parser.produce(expr);
@@ -95,14 +95,14 @@ class PmlParser{
   public function parse(input:ParseInput<String>){
     return this.grammar.asParser().provide(input).fudge();
   }
-  public function produce(expr:Expr<Atom>){
+  public function produce(expr:PExpr<Atom>){
     var reader = [expr].reader();
     var result = Parser.SyncAnon(type,Some('type')).provide(reader).fudge();
     return result;
   }
-  public function type(i:ParseInput<Expr<Atom>>){
+  public function type(i:ParseInput<PExpr<Atom>>){
     return switch(i.head()){
-      case Some(Group(Cons(Value(AnSym(key)),xs))) : 
+      case Some(PGroup(Cons(PValue(AnSym(key)),xs))) : 
         this.grammar = new Base(key);
         var reader  = xs.reader();
         var result  = Parser.SyncAnon(items,Some('items')).provide(reader).fudge();
@@ -117,10 +117,10 @@ class PmlParser{
       default : i.fail("type");
     }
   }
-  public function items(ipt:ParseInput<Expr<Atom>>){
+  public function items(ipt:ParseInput<PExpr<Atom>>){
     trace(ipt.head().prj());
     return switch(ipt.head()){
-      case Some(Group(xs)) :  
+      case Some(PGroup(xs)) :  
         var reader = xs.reader();
         var result = Parser.SyncAnon(item,Some('item')).many().provide(reader).fudge();
         var show   = result.value().defv([]);
@@ -138,8 +138,8 @@ class PmlParser{
       (next,memo) -> {
         //trace('$next $memo');
          return switch([next,memo]){
-          ///case [Lit(Empty),_] : memo;
-          //case [_,Lit(Empty)] : next;
+          ///case [Lit(PEmpty),_] : memo;
+          //case [_,Lit(PEmpty)] : next;
           default             : Seq(next,memo);
         }
       }
@@ -148,18 +148,18 @@ class PmlParser{
   function enalt(arr:Array<Lang<String>>) { return arr.lfold1(Alt).defv(One); }
   function anon(fn,tag) return Parser.SyncAnon(fn,tag);
 
-  public function item(ipt:ParseInput<Expr<Atom>>):ParseResult<Expr<Atom>,Couple<String,Lang<String>>>{
+  public function item(ipt:ParseInput<PExpr<Atom>>):ParseResult<PExpr<Atom>,Couple<String,Lang<String>>>{
     trace(ipt);
     return switch(ipt.head()){
-      case Some(Group(Cons(Value(Str(key)),Cons(Group(xs),Nil)))) : 
+      case Some(PGroup(Cons(PValue(Str(key)),Cons(PGroup(xs),Nil)))) : 
         trace(key);
         trace(xs);
         var reader  = xs.reader();
         var fn      = (arr:Array<Lang<String>>) -> arr.lfold1(Seq).defv(One);
         var result  = (Parser.SyncAnon(node,'node')).many().then(fn).provide(reader).convert(
-          (res:ParseResult<Expr<Atom>,Lang<String>>) -> res.map(lang ->__.couple(key,lang))
+          (res:ParseResult<PExpr<Atom>,Lang<String>>) -> res.map(lang ->__.couple(key,lang))
         ).fudge();
-        var output  = result.value().defv(__.couple(key,Lit(ExprDef.Empty)));
+        var output  = result.value().defv(__.couple(key,Lit(PExprDef.PEmpty)));
         ipt.tail().ok(output);
       case null : 
         ipt.fail('');
@@ -168,10 +168,10 @@ class PmlParser{
         ipt.fail('');
     }
   }
-  public function seq(ipt:ParseInput<Expr<Atom>>):ParseResult<Expr<Atom>,Lang<String>>{
+  public function seq(ipt:ParseInput<PExpr<Atom>>):ParseResult<PExpr<Atom>,Lang<String>>{
     trace('seq: $ipt');
     return switch(ipt.head()){
-      case Some(Group(xs))    : 
+      case Some(PGroup(xs))    : 
         var reader = xs.reader();
         var result = anon(node,'node').one_many().then(enseq).provide(reader).fudge();
         trace(ipt.tail());
@@ -179,45 +179,45 @@ class PmlParser{
       default           : ipt.fail('seq');
     }
   }
-  public function app(ipt:ParseInput<Expr<Atom>>):ParseResult<Expr<Atom>,Lang<String>>{
+  public function app(ipt:ParseInput<PExpr<Atom>>):ParseResult<PExpr<Atom>,Lang<String>>{
     return switch(ipt.head()){
-      case Some(Value(AnSym(x))) : ipt.tail().ok(App(x));
+      case Some(PValue(AnSym(x))) : ipt.tail().ok(App(x));
       default                         : ipt.fail('app');
     }
   }
   //TODO why is this broken? Parser.Anon is the Identity of all under Memo?
-  public function rop(name:String,cons:Lang<String>->Lang<String>):Parser<Expr<Atom>,Lang<String>>{
-    return Parser.SyncAnon((ipt:ParseInput<Expr<Atom>>) -> 
+  public function rop(name:String,cons:Lang<String>->Lang<String>):Parser<PExpr<Atom>,Lang<String>>{
+    return Parser.SyncAnon((ipt:ParseInput<PExpr<Atom>>) -> 
       switch(ipt.head()){
-        case Some(Value(AnSym(name)))  : node(ipt.tail()).map(cons);
+        case Some(PValue(AnSym(name)))  : node(ipt.tail()).map(cons);
         default                             : ipt.fail(name);
       } 
     ,Some('rop'));
   }
-  public function arg(ipt:ParseInput<Expr<Atom>>):ParseResult<Expr<Atom>,Lang<String>>{
+  public function arg(ipt:ParseInput<PExpr<Atom>>):ParseResult<PExpr<Atom>,Lang<String>>{
     trace('arg: ${ipt.head().prj()}');
     //var reader = xs.reader();
     //var result = anon(node).one_many().then(enseq).parse(reader);
     return switch(ipt.head()){
-      case Some(Group(xs))  : seq(ipt);
+      case Some(PGroup(xs))  : seq(ipt);
       default               : node(ipt);
     }
   }
-  public function tag(ipt:ParseInput<Expr<Atom>>):ParseResult<Expr<Atom>,Lang<String>>{
+  public function tag(ipt:ParseInput<PExpr<Atom>>):ParseResult<PExpr<Atom>,Lang<String>>{
     trace('tag: ${ipt.head().prj()}');
     return switch(ipt.head()){
-      case Some(Value(AnSym('tag'))) : 
+      case Some(PValue(AnSym('tag'))) : 
         var rest = ipt.tail();
         trace(rest.head().prj());
         switch(rest.head()){
-          case Some(Group(Cons(Value(Str(str)),xs)))  : 
+          case Some(PGroup(Cons(PValue(Str(str)),xs)))  : 
             arg(xs.reader()).map(Tag.bind(str)).tack(rest.tail(),ipt);
           default                               : ipt.fail('tag');
         }
       default : ipt.fail('tag');
     }
   }
-  public function node(ipt:ParseInput<Expr<Atom>>):ParseResult<Expr<Atom>,Lang<String>>{
+  public function node(ipt:ParseInput<PExpr<Atom>>):ParseResult<PExpr<Atom>,Lang<String>>{
     trace('node: ${ipt.head().prj()}');
     return 
       Parser.Eof().not()
@@ -233,40 +233,40 @@ class PmlParser{
             .or(anon(app,Some('app')))
       ).provide(ipt).fudge();
   }
-  // public function nil(ipt:Input<Expr<Atom>>):ParseResult<Expr<Atom>,Lang<String>>{
+  // public function nil(ipt:Input<PExpr<Atom>>):ParseResult<PExpr<Atom>,Lang<String>>{
   //   return switch(ipt.head()){
-  //     case null : ipt.ok(Lit(Empty));
+  //     case null : ipt.ok(Lit(PEmpty));
   //     default   : ipt.fail("nil");
   //   }
   // }
-  public function sip(ipt:ParseInput<Expr<Atom>>){
+  public function sip(ipt:ParseInput<PExpr<Atom>>){
     trace('sip: ${ipt.head()}');
     return switch(ipt.head()){
-      case Some(Value(AnSym("sip"))) : arg(ipt.tail()).map(Sip);
+      case Some(PValue(AnSym("sip"))) : arg(ipt.tail()).map(Sip);
       default                             : ipt.fail('sip');
     }
   }
-  public function opt(ipt:ParseInput<Expr<Atom>>){
+  public function opt(ipt:ParseInput<PExpr<Atom>>){
     trace('opt: ${ipt.head().prj()}');
     return switch(ipt.head()){
-      case Some(Value(AnSym("opt"))) : arg(ipt.tail()).map(Opt);
+      case Some(PValue(AnSym("opt"))) : arg(ipt.tail()).map(Opt);
       default                             : ipt.fail("opt");
     }
   }
-  public function mem(ipt:ParseInput<Expr<Atom>>){
+  public function mem(ipt:ParseInput<PExpr<Atom>>){
     trace('mem: ${ipt.head().prj()}');
     return switch(ipt.head()){
-      case Some(Value(AnSym("mem")))      : arg(ipt.tail()).map(Mem);
+      case Some(PValue(AnSym("mem")))      : arg(ipt.tail()).map(Mem);
       default                             : ipt.fail("mem");
     }
   }
-  public function alt(ipt:ParseInput<Expr<Atom>>){
+  public function alt(ipt:ParseInput<PExpr<Atom>>){
     trace('alt: ${ipt.head().prj()}');
     return switch(ipt.head()){
-      case Some(Value(AnSym("alt"))) : 
+      case Some(PValue(AnSym("alt"))) : 
         var result = anon(node,Some('node')).one_many();
         switch(ipt.tail().head()){
-          case Some(Group(xs)) : 
+          case Some(PGroup(xs)) : 
             anon(node,Some('node'))
             .one_many()
             .then(enalt)
@@ -278,19 +278,19 @@ class PmlParser{
       default : ipt.fail("alt");
     }
   }
-  public function rep(ipt:ParseInput<Expr<Atom>>){
+  public function rep(ipt:ParseInput<PExpr<Atom>>){
     return switch(ipt.head()){
-      case Some(Value(AnSym("rep"))) : 
+      case Some(PValue(AnSym("rep"))) : 
         seq(ipt.tail()).map(Rep);
       default : ipt.fail('rep');
     }
   }
-  public function app_lit(ipt:ParseInput<Expr<Atom>>){
+  public function app_lit(ipt:ParseInput<PExpr<Atom>>){
     trace('app_lit: ${ipt.head().prj()}');
     return switch(ipt.head()){
-      case Some(Value(AnSym(key))) :
+      case Some(PValue(AnSym(key))) :
         switch(__.option(ipt.tail()).map( t -> t.head()).flat_map( v -> __.option(v) ) ){
-          case Some(Some(Value(Str(val))))  : ipt.drop(2).ok(App(key,Value(val)));
+          case Some(Some(PValue(Str(val))))  : ipt.drop(2).ok(App(key,PValue(val)));
           default                           : ipt.fail('app_lit: $key');
         }
       default : ipt.fail("app_lit");

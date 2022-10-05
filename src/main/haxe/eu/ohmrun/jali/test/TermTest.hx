@@ -4,7 +4,7 @@ import haxe.Serializer;
 import haxe.Unserializer;
 
 
-@:access(stx)class TermTest extends haxe.unit.TestCase{
+@:access(stx)class TermTest extends TestCase{
   public function test_declare(){
     // likes (john , mary)
     trace("\n");
@@ -20,7 +20,7 @@ import haxe.Unserializer;
     trace(t00);
     //var t000 = term0.toArray();
     //trace(t000);
-    //var t0000 = TExpr.fromArray(t000);
+    //var t0000 = TPExpr.fromArray(t000);
     //trace(t0000);
 
     var term2 : Term<String>= TOf(Code("and"),[term0,term1]);

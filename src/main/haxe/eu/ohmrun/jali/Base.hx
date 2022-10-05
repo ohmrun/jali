@@ -18,7 +18,7 @@ class BaseLift{
     var parser = Parser.Anon((ipt:Input<Lang<Atom>>) -> {
       var stashed = ipt.memo.symbols.get(parser);
       return switch(stashed){
-        case Group(Cons(Str(item))) : 
+        case PGroup(Cons(Str(item))) : 
       }
     });
     return parser;
