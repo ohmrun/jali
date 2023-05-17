@@ -111,7 +111,7 @@ class PmlParser{
             for(tp in arr){
               grammar.set(tp.fst(),grammar.lazy(tp.snd()));
             }
-            return Noise;
+            return Nada;
           }
         );
       default : i.fail("type");
